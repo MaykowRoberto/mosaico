@@ -1,7 +1,7 @@
 {
   "name": "Mosaico Studio",
   "short_name": "Mosaico Studio",
-  "description": "Editor mobile-first para criar mosaicos de imagens com armazenamento local e exportação em PNG.",
+  "description": "Editor mobile-first para criar mosaicos de imagens, com 100 resultados de pesquisa, molduras, adesivos, fundos, armazenamento local e exportação.",
   "lang": "pt-BR",
   "start_url": "./index.html",
   "scope": "./",

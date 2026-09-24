@@ -1,16 +1,36 @@
-Mosaico Studio — PWA
+MOSAICO STUDIO — PWA
+====================
 
-Arquivos:
-- index.html — interface + CSS + JavaScript em um único arquivo
-- manifest.json — manifesto PWA
-- sw.js — service worker para cache/offline
-- icon.svg, icon-192.png, icon-512.png — ícones
+Arquivos principais
+- index.html       Aplicativo completo (HTML + CSS + JavaScript em um único arquivo)
+- manifest.json    Manifesto PWA
+- sw.js            Service Worker / cache offline
+- icon.svg         Ícone vetorial
+- icon-192.png     Ícone PWA 192x192
+- icon-512.png     Ícone PWA 512x512
 
-Teste local:
-1. Abra um terminal nesta pasta.
-2. Execute: python -m http.server 8080
-3. Acesse: http://localhost:8080/
+PESQUISA DE IMAGENS
+- O aplicativo detecta o locale disponibilizado pelo navegador/dispositivo via navigator.languages/navigator.language.
+- Em Português do Brasil, a pesquisa usa o termo em português e também uma expansão automática de termos comuns para melhorar a compatibilidade com catálogos internacionais.
+- A busca tenta preencher até 100 resultados únicos, usando páginas/continuação das APIs e, quando necessário, a segunda fonte.
+- Fontes: Wikimedia Commons e Openverse.
 
-Para instalar como PWA, use HTTPS ou localhost/127.0.0.1. Abrir o index.html diretamente com file:// não ativa Service Worker nem instalação PWA.
+ELEMENTOS CRIATIVOS
+- Molduras: formas retangular, círculo, hexágono, diamante, estrela, coração e orgânica; estilos clássico, duplo e destaque.
+- Adesivos: conjunto visual baseado em OpenMoji, carregado por CDN quando necessário.
+- Fundos: sólidos, gradientes e padrões de grade/pontos.
 
-A pesquisa de imagens usa Openverse em tempo de execução, sem chave de API embutida no código.
+CRÉDITOS / LICENÇAS
+OpenMoji — gráficos sob CC BY-SA 4.0.
+Projeto: https://openmoji.org/
+Repositório: https://github.com/hfg-gmuend/openmoji
+
+A pesquisa consulta catálogos externos apenas quando há conexão. O editor, projeto salvo, recursos internos e Service Worker continuam funcionando localmente.
+
+TESTE LOCAL
+1. Extraia esta pasta.
+2. Abra um terminal nela.
+3. Execute: python -m http.server 8080
+4. Acesse: http://localhost:8080/
+
+Não abra por file:// para testar instalação e Service Worker da PWA.

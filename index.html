@@ -116,8 +116,12 @@
       border-radius:13px;padding:0 13px;font-size:13px;min-width:0
     }
     .search-submit{
-      width:44px;border-radius:13px;background:var(--text);color:var(--panel);display:grid;place-items:center;cursor:pointer
+      width:44px;min-width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,var(--accent),#9a6bff);color:#fff;display:grid;place-items:center;cursor:pointer;box-shadow:0 8px 18px rgba(119,87,255,.22);flex:none
     }
+    .search-submit:hover{filter:brightness(1.04);transform:translateY(-1px)}
+    .search-submit:active{transform:translateY(0) scale(.97)}
+    .search-submit svg{width:21px!important;height:21px!important;display:block!important;stroke:currentColor!important}
+    .search-box .search-submit svg{pointer-events:none}
     .search-meta{font-size:11px;color:var(--muted);margin-top:9px;min-height:15px}
     .library-tools{display:flex;gap:8px;padding:12px 18px;border-bottom:1px solid var(--line)}
     .btn{
@@ -205,7 +209,23 @@
     html[data-theme="dark"] .photo-card{border-color:rgba(255,255,255,.08)}
     .photo-card.selected{outline:3px solid rgba(119,87,255,.48);outline-offset:1px}
     .photo-card.dragging{opacity:.45}
+    .photo-visual{position:absolute;inset:0;overflow:hidden}
     .photo-card img{width:100%;height:100%;object-fit:cover;pointer-events:none}
+    .photo-frame{position:absolute;inset:0;border:4px solid rgba(255,255,255,.72);box-shadow:inset 0 0 0 1px rgba(20,15,30,.18);pointer-events:none}
+    .photo-card[data-frame="none"] .photo-frame{display:none}
+    .shape-circle{clip-path:circle(50% at 50% 50%)}
+    .shape-hex{clip-path:polygon(25% 3%,75% 3%,100% 50%,75% 97%,25% 97%,0 50%)}
+    .shape-diamond{clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
+    .shape-star{clip-path:polygon(50% 2%,61% 36%,98% 36%,68% 57%,79% 94%,50% 72%,21% 94%,32% 57%,2% 36%,39% 36%)}
+    .shape-heart{clip-path:polygon(50% 100%,4% 43%,5% 29%,12% 18%,24% 11%,37% 14%,50% 30%,63% 14%,76% 11%,88% 18%,95% 29%,96% 43%)}
+    .shape-squircle{border-radius:28%}
+    .photo-card[data-frame="double"] .photo-frame{border:5px double rgba(255,255,255,.88);box-shadow:inset 0 0 0 7px rgba(0,0,0,.10)}
+    .photo-card[data-frame="accent"] .photo-frame{border:5px solid rgba(119,87,255,.9);box-shadow:inset 0 0 0 2px rgba(255,255,255,.7)}
+    .photo-card[data-frame="soft"] .photo-frame{border:8px solid rgba(255,255,255,.92);box-shadow:inset 0 0 0 1px rgba(30,20,40,.12)}
+    .photo-card.sticker-card{background:transparent!important;border:0!important;box-shadow:none!important}
+    .photo-card.sticker-card .photo-visual{display:grid;place-items:center}
+    .photo-card.sticker-card img{object-fit:contain!important;padding:8%}
+    .photo-card.sticker-card .photo-frame,.photo-card.sticker-card .photo-shade,.photo-card.sticker-card .photo-meta{display:none!important}
     .photo-card .photo-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,10,20,.55),transparent 34%,rgba(10,7,14,.72));opacity:0;transition:.18s}
     .photo-card:hover .photo-shade,.photo-card.selected .photo-shade,.photo-card.show-actions .photo-shade{opacity:1}
     .photo-actions{
@@ -248,6 +268,20 @@
     .divider{height:1px;background:var(--line);margin:18px 0}
     .hint-box{padding:11px;border-radius:12px;background:var(--accent-soft);color:var(--text);font-size:10px;line-height:1.5}
     .hint-box b{color:var(--accent)}
+    .resource-box{margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
+    .resource-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
+    .resource-tab{min-height:34px;border:1px solid var(--line);border-radius:10px;background:var(--panel-2);font-size:9px;font-weight:850;color:var(--muted);cursor:pointer}
+    .resource-tab.active{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+    .resource-content{margin-top:10px}
+    .resource-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+    .asset-card{min-height:72px;border:1px solid var(--line);border-radius:12px;background:var(--panel-2);padding:6px;cursor:pointer;text-align:center;display:flex;flex-direction:column;gap:5px;align-items:center;justify-content:center;transition:.16s}
+    .asset-card:hover{transform:translateY(-1px);border-color:#cfc6dd;box-shadow:var(--shadow-sm)}
+    .asset-preview{width:100%;height:46px;border-radius:8px;display:grid;place-items:center;overflow:hidden;background:#f1edf5}
+    .asset-preview img{width:100%;height:100%;object-fit:contain;padding:5px}
+    .asset-name{font-size:8px;font-weight:800;color:var(--text);line-height:1.1}
+    .asset-note,.asset-credit{font-size:8px;color:var(--muted);line-height:1.45;margin-top:8px}
+    html[data-theme="dark"] .asset-preview{background:#29242f}
+    .resource-credit{font-size:7.5px;color:var(--muted);line-height:1.45;margin-top:8px}
     .mobile-nav{
       display:none;position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));
       height:64px;background:rgba(255,255,255,.90);border:1px solid var(--line);box-shadow:var(--shadow);
@@ -365,7 +399,7 @@
             <input class="search-input" id="searchInput" type="search" autocomplete="off" placeholder="Ex.: praia, arquitetura..." aria-label="Pesquisar imagens">
             <button class="search-submit" id="searchBtn" type="submit" aria-label="Pesquisar"></button>
           </form>
-          <div class="search-meta" id="searchMeta">Fontes abertas: Wikimedia Commons + Openverse · toque para adicionar.</div>
+          <div class="search-meta" id="searchMeta">Idioma detectado · até 100 resultados por pesquisa.</div>
         </div>
         <div class="library-tools">
           <button class="btn btn-primary" id="uploadBtn" type="button"></button>
@@ -452,8 +486,17 @@
               </div>
             </div>
 
+            <div class="resource-box">
+              <div class="control-label"><span>Biblioteca criativa</span><span class="value">elementos</span></div>
+              <div class="resource-tabs">
+                <button class="resource-tab active" type="button" data-resource-tab="frames">Molduras</button>
+                <button class="resource-tab" type="button" data-resource-tab="stickers">Adesivos</button>
+                <button class="resource-tab" type="button" data-resource-tab="backgrounds">Fundos</button>
+              </div>
+              <div class="resource-content"></div>
+            </div>
             <div class="divider"></div>
-            <div class="hint-box"><b>Dica:</b> selecione uma foto no canvas. Os controles de aumentar, reduzir, ajustar e remover aparecem diretamente nela.</div>
+            <div class="hint-box"><b>Dica:</b> selecione uma foto no canvas. Você também pode aplicar uma moldura, adicionar adesivos e trocar o fundo da composição.</div>
           </aside>
         </div>
       </section>
@@ -479,7 +522,7 @@
         <input class="search-input" id="searchInputMobile" type="search" autocomplete="off" placeholder="Ex.: natureza, cidade...">
         <button class="search-submit" type="submit" aria-label="Pesquisar"></button>
       </form>
-      <div class="search-meta" id="searchMetaMobile">Fontes abertas: Wikimedia Commons + Openverse</div>
+      <div class="search-meta" id="searchMetaMobile">Idioma detectado · até 100 resultados por pesquisa.</div>
       <div class="library-results" id="searchResultsMobile" style="padding:12px 0 0"></div>
     </div>
   </div>
@@ -549,7 +592,9 @@
         gap: 10,
         radius: 18,
         boardBg: "#efebf3",
-        theme: localStorage.getItem("mosaico-theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+        boardBgSize: "",
+        theme: localStorage.getItem("mosaico-theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"),
+        systemLocale: navigator.language || (navigator.languages && navigator.languages[0]) || "en-US"
       };
 
       const state = {
@@ -740,6 +785,7 @@
         els.board.style.setProperty("--gap", state.settings.gap + "px");
         els.board.style.setProperty("--radius", state.settings.radius + "px");
         els.board.style.background = state.settings.boardBg;
+        els.board.style.backgroundSize = state.settings.boardBgSize || "";
         els.gapRange.value = state.settings.gap;
         els.radiusRange.value = state.settings.radius;
         els.gapValue.textContent = `${state.settings.gap} px`;
@@ -794,105 +840,75 @@
          segunda tentativa, caso a busca do Commons não retorne resultados. ---------- */
       let currentSearchController = null;
 
-      function setSearchUI(target, metaText, html){
-        const meta = target === "mobile" ? els.searchMetaMobile : els.searchMeta;
-        const resultsEl = target === "mobile" ? els.searchResultsMobile : els.searchResults;
-        meta.textContent = metaText;
-        if(html !== undefined) resultsEl.innerHTML = html;
-      }
-
-      async function fetchWikimedia(query, signal){
-        const api = new URL("https://commons.wikimedia.org/w/api.php");
-        api.searchParams.set("action", "query");
-        api.searchParams.set("generator", "search");
-        api.searchParams.set("gsrsearch", query);
-        api.searchParams.set("gsrnamespace", "6");
-        api.searchParams.set("gsrlimit", "36");
-        api.searchParams.set("prop", "imageinfo");
-        api.searchParams.set("iiprop", "url|mime|extmetadata");
-        api.searchParams.set("iiurlwidth", "640");
-        api.searchParams.set("format", "json");
-        api.searchParams.set("origin", "*");
-
-        const response = await fetch(api.toString(), { signal, headers:{Accept:"application/json"} });
-        if(!response.ok) throw new Error("Wikimedia HTTP " + response.status);
-        const data = await response.json();
-        const pages = Object.values(data.query?.pages || {});
-        return pages.map(page=>{
-          const info = page.imageinfo?.[0] || {};
-          const meta = info.extmetadata || {};
-          const title = String(page.title || "").replace(/^File:/i, "");
-          const creator = meta.Artist?.value ? String(meta.Artist.value).replace(/<[^>]*>/g, "").trim() : "";
-          const license = meta.LicenseShortName?.value ? String(meta.LicenseShortName.value).replace(/<[^>]*>/g, "").trim() : "";
-          return {
-            title: title || "Imagem do Wikimedia Commons",
-            creator,
-            license,
-            provider: "Wikimedia Commons",
-            thumbnail: info.thumburl || info.url || "",
-            url: info.url || info.thumburl || "",
-            foreign_landing_url: page.fullurl || "https://commons.wikimedia.org/"
-          };
-        }).filter(x=>x.thumbnail);
-      }
-
-      async function fetchOpenverse(query, signal){
-        const api = new URL("https://api.openverse.org/v1/images/");
-        api.searchParams.set("q", query);
-        api.searchParams.set("page_size", "36");
-        const response = await fetch(api.toString(), {signal, headers:{Accept:"application/json"}});
-        if(!response.ok) throw new Error("Openverse HTTP " + response.status);
-        const data = await response.json();
-        return (Array.isArray(data.results) ? data.results : []).map(hit=>({
-          title: hit.title || "Imagem aberta",
-          creator: hit.creator || "",
-          license: hit.license ? `${hit.license}${hit.license_version ? " " + hit.license_version : ""}` : "",
-          provider: hit.provider || hit.source || "Openverse",
-          thumbnail: hit.thumbnail || hit.url || "",
-          url: hit.url || hit.thumbnail || "",
-          foreign_landing_url: hit.foreign_landing_url || ""
-        })).filter(x=>x.thumbnail);
-      }
-
-      async function searchOpenverse(query, target="desktop"){
-        if(!navigator.onLine){
-          setSearchUI(target, "Você está offline. A busca web precisa de conexão.", `<div class="result-empty"><strong>Pesquisa offline</strong>Adicione fotos do aparelho para continuar criando.</div>`);
-          return;
+      /* ---------- Idioma do sistema + expansão de pesquisa ---------- */
+      const LANGUAGE_NAMES = {"pt-BR":"Português (Brasil)","pt":"Português","en-US":"English (US)","en":"English","es":"Español","fr":"Français","de":"Deutsch","it":"Italiano","ja":"日本語"};
+      const PT_TERMS = {
+        "pôr do sol":"sunset","por do sol":"sunset","nascer do sol":"sunrise","céu":"sky","ceu":"sky","mar":"sea","praia":"beach","praias":"beaches","oceano":"ocean","montanha":"mountain","montanhas":"mountains","floresta":"forest","florestas":"forests","natureza":"nature","paisagem":"landscape","paisagens":"landscapes","cidade":"city","cidades":"cities","arquitetura":"architecture","prédio":"building","predio":"building","flores":"flowers","flor":"flower","árvore":"tree","arvore":"tree","folhas":"leaves","cachorro":"dog","cachorros":"dogs","gato":"cat","gatos":"cats","pássaro":"bird","passaro":"bird","animais":"animals","café":"coffee","cafe":"coffee","comida":"food","comidas":"food","bolo":"cake","doces":"desserts","criança":"child","crianca":"child","crianças":"children","criancas":"children","pessoas":"people","mulher":"woman","homem":"man","carro":"car","carros":"cars","moto":"motorcycle","motos":"motorcycles","bicicleta":"bicycle","avião":"airplane","aviao":"airplane","viagem":"travel","viagens":"travel","hotel":"hotel","casa":"house","casas":"houses","escritório":"office","escritorio":"office","tecnologia":"technology","computador":"computer","celular":"smartphone","livro":"book","livros":"books","abstrato":"abstract","textura":"texture","madeira":"wood","água":"water","agua":"water","rio":"river","rios":"rivers","cachoeira":"waterfall","cachoeiras":"waterfalls","neve":"snow","chuva":"rain","tempestade":"storm","natal":"christmas","festa":"party","casamento":"wedding","aniversário":"birthday","aniversario":"birthday","escola":"school","esporte":"sport","futebol":"football soccer","jogo":"game","negócios":"business","negocios":"business","praia bonita":"beautiful beach","praia tropical":"tropical beach","paisagem bonita":"beautiful landscape","flor rosa":"pink flower","folhas verdes":"green leaves","montanha nevada":"snowy mountain","café da manhã":"breakfast","cafe da manha":"breakfast","fotos":"photos","foto":"photo","imagem":"image","imagens":"images","bonita":"beautiful","bonito":"beautiful","bonitas":"beautiful","bonitos":"beautiful","brincando":"playing","brincar":"playing","jovem":"young","jovens":"young","grande":"large","pequeno":"small","azul":"blue","verde":"green","vermelho":"red","amarelo":"yellow","branco":"white","preto":"black","dourado":"golden","antigo":"old","antiga":"old","moderno":"modern","moderna":"modern","luz":"light","luzes":"lights","noite":"night","dia":"day","manhã":"morning","manha":"morning","tarde":"afternoon","bonito retrato":"beautiful portrait","sertão":"semiarid brazil","sertao":"semiarid brazil","pernambuco":"Pernambuco Brazil","brasil":"Brazil"
+      };
+      const localeRaw = (navigator.languages && navigator.languages.length ? navigator.languages[0] : navigator.language) || Intl.DateTimeFormat().resolvedOptions().locale || state.settings.systemLocale || "en-US";
+      const systemLocale = String(localeRaw).replace("_","-");
+      const systemLang = systemLocale.toLowerCase().startsWith("pt") ? "pt" : systemLocale.slice(0,2).toLowerCase();
+      state.settings.systemLocale = systemLocale;
+      const systemLanguageName = LANGUAGE_NAMES[systemLocale] || LANGUAGE_NAMES[systemLang] || systemLocale;
+      function stripAccents(value){return String(value||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"");}
+      const PT_STOPWORDS=new Set(["a","o","as","os","de","da","do","das","dos","e","em","na","no","nas","nos","com","para","por","um","uma","uns","umas","que","sobre","entre","ao","aos","à","às","mais","muito","muita","muitos","muitas"]);
+      function escapeRegExp(value){return String(value).replace(/[.*+?^${}()|[\]\\]/g,"\\$&");}
+      function translatePortugueseQuery(query){
+        let out=" "+query.trim().toLowerCase()+" ";
+        const entries=Object.entries(PT_TERMS).sort((a,b)=>b[0].length-a[0].length);
+        for(const [pt,en] of entries){
+          const normPt=stripAccents(pt);
+          const pattern=new RegExp("(^|\\s)"+escapeRegExp(normPt)+"(?=\\s|$)","gi");
+          const exact=new RegExp("(^|\\s)"+escapeRegExp(pt)+"(?=\\s|$)","gi");
+          out=out.replace(pattern,(m,p)=>p+en).replace(exact,(m,p)=>p+en);
         }
-        query = query.trim();
-        if(!query) return;
-        if(currentSearchController) currentSearchController.abort();
-        currentSearchController = new AbortController();
+        const englishTokens=out.trim().split(/\s+/).filter(Boolean).filter(token=>!PT_STOPWORDS.has(token));
+        return englishTokens.join(" ");
+      }
+      function getSearchQueries(query){const q=query.trim();const list=[q];if(systemLang==="pt"){const expanded=translatePortugueseQuery(q);if(expanded&&expanded.toLowerCase()!==q.toLowerCase())list.push(expanded);}return [...new Set(list)];}
+      function updateSearchLanguageUI(){
+        const txt=`Idioma detectado: ${systemLanguageName} · até 100 resultados por pesquisa.`;
+        els.searchMeta.textContent=txt; els.searchMetaMobile.textContent=txt;
+        const ph=systemLang==="pt"?"Ex.: praia, arquitetura, natureza...":"Ex.: nature, architecture...";
+        els.searchInput.placeholder=ph; els.searchInputMobile.placeholder=ph;
+      }
+      function setSearchUI(target,metaText,html){const meta=target==="mobile"?els.searchMetaMobile:els.searchMeta;const resultsEl=target==="mobile"?els.searchResultsMobile:els.searchResults;meta.textContent=metaText;if(html!==undefined)resultsEl.innerHTML=html;}
 
-        const resultsEl = target === "mobile" ? els.searchResultsMobile : els.searchResults;
-        setSearchUI(target, "Buscando imagens…", `<div class="result-empty"><div class="loader" style="margin:0 auto 12px"></div>Procurando em bibliotecas abertas.</div>`);
-
-        try{
-          let hits = [];
-          let sourceLabel = "Wikimedia Commons";
-
-          try{
-            hits = await fetchWikimedia(query, currentSearchController.signal);
-          }catch(firstError){
-            if(firstError.name === "AbortError") throw firstError;
-            console.warn("Wikimedia indisponível, tentando Openverse:", firstError);
-            sourceLabel = "Openverse";
-            try{
-              hits = await fetchOpenverse(query, currentSearchController.signal);
-            }catch(secondError){
-              if(secondError.name === "AbortError") throw secondError;
-              console.warn("Openverse também indisponível:", secondError);
-              throw new Error("As fontes de busca não responderam.");
-            }
+      async function fetchWikimedia(query,signal,limit=100){
+        const hits=[];let continuation=null;const seen=new Set();
+        while(hits.length<limit){
+          const api=new URL("https://commons.wikimedia.org/w/api.php");
+          api.searchParams.set("action","query");api.searchParams.set("generator","search");api.searchParams.set("gsrsearch",query);api.searchParams.set("gsrnamespace","6");api.searchParams.set("gsrlimit","50");api.searchParams.set("gsrinfo","totalhits");api.searchParams.set("uselang",systemLocale.toLowerCase()==="pt-br"?"pt-br":systemLang);api.searchParams.set("prop","imageinfo");api.searchParams.set("iiprop","url|mime|extmetadata");api.searchParams.set("iiurlwidth","640");api.searchParams.set("format","json");api.searchParams.set("origin","*");
+          if(continuation)Object.entries(continuation).forEach(([k,v])=>api.searchParams.set(k,String(v)));
+          const response=await fetch(api.toString(),{signal,headers:{Accept:"application/json"}});
+          if(!response.ok)throw new Error("Wikimedia HTTP "+response.status);
+          const data=await response.json();const pages=Object.values(data.query?.pages||{});
+          for(const page of pages){
+            const info=page.imageinfo?.[0]||{};const meta=info.extmetadata||{};const title=String(page.title||"").replace(/^File:/i,"");const creator=meta.Artist?.value?String(meta.Artist.value).replace(/<[^>]*>/g,"").trim():"";const license=meta.LicenseShortName?.value?String(meta.LicenseShortName.value).replace(/<[^>]*>/g,"").trim():"";const thumb=info.thumburl||info.url||"";const key=info.url||thumb||title;if(!thumb||seen.has(key))continue;seen.add(key);hits.push({title:title||"Imagem do Wikimedia Commons",creator,license,provider:"Wikimedia Commons",thumbnail:thumb,url:info.url||thumb,foreign_landing_url:page.fullurl||"https://commons.wikimedia.org/"});if(hits.length>=limit)break;
           }
-
-          renderSearchResults(hits, resultsEl);
-          setSearchUI(target, hits.length ? `${hits.length} resultados · ${sourceLabel} · toque para adicionar.` : `Nenhuma imagem encontrada em ${sourceLabel}.`);
-        }catch(err){
-          if(err.name === "AbortError") return;
-          console.error(err);
-          setSearchUI(target, "A pesquisa não respondeu.", `<div class="result-empty"><strong>Não foi possível pesquisar</strong>Confira a internet e tente novamente. Fotos locais continuam disponíveis.</div>`);
+          if(hits.length>=limit||!data.continue)break;continuation=data.continue;
         }
+        return hits;
+      }
+      async function fetchOpenverse(query,signal,limit=100){
+        const hits=[];const seen=new Set();let page=1;
+        while(hits.length<limit&&page<=5){
+          const api=new URL("https://api.openverse.org/v1/images/");api.searchParams.set("q",query);api.searchParams.set("page",String(page));api.searchParams.set("page_size","20");if(/^[a-z]{2}$/.test(systemLang))api.searchParams.set("lang",systemLang);
+          let response=await fetch(api.toString(),{signal,headers:{Accept:"application/json"}});
+          if(response.status===400&&systemLang){const retry=new URL(api.toString());retry.searchParams.delete("lang");response=await fetch(retry.toString(),{signal,headers:{Accept:"application/json"}});}
+          if(!response.ok)throw new Error("Openverse HTTP "+response.status);
+          const data=await response.json();const rows=Array.isArray(data.results)?data.results:[];if(!rows.length)break;
+          for(const hit of rows){const thumbnail=hit.thumbnail||hit.url||"";const url=hit.url||hit.thumbnail||"";const key=url||thumbnail||hit.id||hit.title;if(!thumbnail||seen.has(key))continue;seen.add(key);hits.push({title:hit.title||"Imagem aberta",creator:hit.creator||"",license:hit.license?`${hit.license}${hit.license_version?" "+hit.license_version:""}`:"",provider:hit.provider||hit.source||"Openverse",thumbnail,url,foreign_landing_url:hit.foreign_landing_url||""});if(hits.length>=limit)break;}
+          if(rows.length<20)break;page++;
+        }
+        return hits;
+      }
+      function mergeUnique(base,additions,limit=100){const out=[...base];const seen=new Set(out.map(x=>x.url||x.thumbnail||x.title));for(const item of additions){const key=item.url||item.thumbnail||item.title;if(!key||seen.has(key))continue;seen.add(key);out.push(item);if(out.length>=limit)break;}return out;}
+      async function searchOpenverse(query,target="desktop"){
+        if(!navigator.onLine){setSearchUI(target,"Você está offline. A busca web precisa de conexão.",`<div class="result-empty"><strong>Pesquisa offline</strong>Adicione fotos do aparelho para continuar criando.</div>`);return;}
+        query=query.trim();if(!query)return;if(currentSearchController)currentSearchController.abort();currentSearchController=new AbortController();const signal=currentSearchController.signal;const resultsEl=target==="mobile"?els.searchResultsMobile:els.searchResults;const queries=getSearchQueries(query);
+        setSearchUI(target,`Buscando em ${systemLanguageName}…`,`<div class="result-empty"><div class="loader" style="margin:0 auto 12px"></div>Procurando até 100 imagens em bibliotecas abertas.</div>`);
+        try{let hits=[];for(const q of queries){if(hits.length>=100)break;try{hits=mergeUnique(hits,await fetchWikimedia(q,signal,Math.min(100-hits.length,100)),100);}catch(err){if(err.name==="AbortError")throw err;console.warn("Wikimedia falhou:",err);}}if(hits.length<100){for(const q of queries){if(hits.length>=100)break;try{hits=mergeUnique(hits,await fetchOpenverse(q,signal,Math.min(100-hits.length,100)),100);}catch(err){if(err.name==="AbortError")throw err;console.warn("Openverse falhou:",err);}}}renderSearchResults(hits.slice(0,100),resultsEl);setSearchUI(target,hits.length?`${hits.length} resultados · idioma ${systemLanguageName} · toque para adicionar.`:`Nenhuma imagem encontrada para “${query}”.`);}catch(err){if(err.name==="AbortError")return;console.error(err);setSearchUI(target,"A pesquisa não respondeu.",`<div class="result-empty"><strong>Não foi possível pesquisar</strong>Confira a internet e tente novamente. Fotos locais continuam disponíveis.</div>`);}
       }
 
       function renderSearchResults(hits, resultsEl){
@@ -1010,15 +1026,14 @@
           card.dataset.id = item.id;
           card.draggable = true;
 
+          if(item.type === "sticker") card.classList.add("sticker-card");
+          const visual = document.createElement("div"); visual.className = "photo-visual";
+          const shape = item.shape || "rect"; if(shape !== "rect") visual.classList.add("shape-" + shape);
           const img = document.createElement("img");
-          img.loading = "lazy";
-          img.alt = item.name || "Imagem do mosaico";
-          img.src = getDisplaySrc(item);
-          img.style.objectFit = item.fit === "contain" ? "contain" : "cover";
-          img.addEventListener("error", () => {
-            card.style.background = "linear-gradient(135deg,#d8d0e0,#eee9f2)";
-            toast("Uma imagem externa não pôde ser carregada.");
-          });
+          img.loading = "lazy"; img.alt = item.name || "Imagem do mosaico"; img.src = getDisplaySrc(item);
+          img.style.objectFit = item.type === "sticker" ? "contain" : (item.fit === "contain" ? "contain" : "cover");
+          img.addEventListener("error", () => { card.style.background = "linear-gradient(135deg,#d8d0e0,#eee9f2)"; if(item.type !== "sticker") toast("Uma imagem externa não pôde ser carregada."); });
+          visual.appendChild(img); const frame=document.createElement("div"); frame.className="photo-frame"; card.dataset.frame=item.type === "sticker" ? "none" : (item.frame || "soft"); visual.appendChild(frame);
 
           const shade = document.createElement("div");
           shade.className = "photo-shade";
@@ -1050,7 +1065,7 @@
           badge.textContent = item.type === "local" ? "local" : (item.source || "web");
           meta.append(name,badge);
 
-          card.append(img, shade, actions, meta);
+          card.append(visual, shade, actions, meta);
 
           card.addEventListener("click", () => selectImage(item.id));
           card.addEventListener("dragstart", e => {
@@ -1121,6 +1136,41 @@
         toast("Composição reorganizada.");
       }
 
+      /* ---------- Biblioteca criativa: molduras, adesivos e fundos ---------- */
+      const STICKER_URL = code => `https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji/color/svg/${code}.svg`;
+      const CREATIVE_ASSETS={
+        frames:[{id:"soft",name:"Clássica",shape:"rect",frame:"soft"},{id:"double",name:"Dupla",shape:"rect",frame:"double"},{id:"circle",name:"Círculo",shape:"circle",frame:"soft"},{id:"hex",name:"Hexágono",shape:"hex",frame:"soft"},{id:"diamond",name:"Diamante",shape:"diamond",frame:"accent"},{id:"star",name:"Estrela",shape:"star",frame:"soft"},{id:"heart",name:"Coração",shape:"heart",frame:"accent"},{id:"squircle",name:"Orgânica",shape:"squircle",frame:"soft"}],
+        stickers:[{name:"Coração",code:"2764-FE0F"},{name:"Estrela",code:"2B50"},{name:"Brilho",code:"2728"},{name:"Sol",code:"2600-FE0F"},{name:"Flor",code:"1F337"},{name:"Borboleta",code:"1F98B"},{name:"Arco-íris",code:"1F308"},{name:"Câmera",code:"1F4F7"},{name:"Foguete",code:"1F680"},{name:"Confete",code:"1F389"},{name:"Café",code:"2615"},{name:"Like",code:"1F44D"}],
+        backgrounds:[{id:"lavender",name:"Lavanda",css:"#efebf3"},{id:"paper",name:"Papel",css:"linear-gradient(135deg,#fffdf9,#eee7de)"},{id:"sunset",name:"Pôr do sol",css:"linear-gradient(135deg,#ffd7a1,#e5a7e8 58%,#8d83ff)"},{id:"ocean",name:"Oceano",css:"linear-gradient(135deg,#d9f4f3,#a6c9ea)"},{id:"night",name:"Noite",css:"linear-gradient(135deg,#17131e,#3e2d55)"},{id:"mint",name:"Menta",css:"linear-gradient(135deg,#eef9f2,#c7e6d5)"},{id:"grid",name:"Grade",css:"linear-gradient(#d8d1df 1px,transparent 1px),linear-gradient(90deg,#d8d1df 1px,transparent 1px),#f4f0f7",size:"18px 18px"},{id:"dots",name:"Pontos",css:"radial-gradient(#cfc5dc 1.2px,transparent 1.2px),#f5f0f7",size:"14px 14px"},{id:"black",name:"Preto",css:"#111111"}]
+      };
+      function assetPreviewStyle(a){return a.size?`background-image:${a.css};background-size:${a.size}`:`background:${a.css}`;}
+      function renderResourceContent(root,tab="frames"){
+        const content=root.querySelector?.(".resource-content");if(!content)return;
+        if(tab==="frames"){
+          content.innerHTML=`<div class="resource-grid">${CREATIVE_ASSETS.frames.map(a=>`<button class="asset-card" type="button" data-frame-id="${a.id}" data-frame-shape="${a.shape}" data-frame-style="${a.frame}"><div class="asset-preview"><div style="width:36px;height:36px;background:linear-gradient(135deg,#8a67ff,#e58cff);${a.shape==='circle'?'border-radius:50%;':a.shape==='squircle'?'border-radius:28%;':''}${a.shape==='hex'?'clip-path:polygon(25% 3%,75% 3%,100% 50%,75% 97%,25% 97%,0 50%);':''}${a.shape==='diamond'?'clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);':''}${a.shape==='star'?'clip-path:polygon(50% 2%,61% 36%,98% 36%,68% 57%,79% 94%,50% 72%,21% 94%,32% 57%,2% 36%,39% 36%);':''}${a.shape==='heart'?'border-radius:45% 45% 45% 8%;transform:rotate(45deg) scale(.75);':''}"></div></div><span class="asset-name">${a.name}</span></button>`).join("")}</div><div class="asset-note">Selecione uma foto no mosaico e toque em uma moldura.</div>`;
+        }else if(tab==="stickers"){
+          content.innerHTML=`<div class="resource-grid">${CREATIVE_ASSETS.stickers.map((a,i)=>`<button class="asset-card" type="button" data-sticker-index="${i}"><div class="asset-preview"><img src="${STICKER_URL(a.code)}" alt="${a.name}" loading="lazy"></div><span class="asset-name">${a.name}</span></button>`).join("")}</div><div class="asset-credit">Adesivos: OpenMoji · CC BY-SA 4.0 · créditos incluídos no app.</div>`;
+        }else{
+          content.innerHTML=`<div class="resource-grid">${CREATIVE_ASSETS.backgrounds.map(a=>`<button class="asset-card" type="button" data-bg-id="${a.id}"><div class="asset-preview" style="${assetPreviewStyle(a)}"></div><span class="asset-name">${a.name}</span></button>`).join("")}</div><div class="asset-note">Os fundos entram também na exportação PNG.</div>`;
+        }
+        bindResourceActions(root);
+      }
+      function bindResourceActions(root){
+        root.querySelectorAll?.("[data-frame-id]").forEach(btn=>btn.onclick=()=>applyFrame(btn.dataset.frameShape,btn.dataset.frameStyle));
+        root.querySelectorAll?.("[data-sticker-index]").forEach(btn=>btn.onclick=()=>addSticker(CREATIVE_ASSETS.stickers[Number(btn.dataset.stickerIndex)]));
+        root.querySelectorAll?.("[data-bg-id]").forEach(btn=>btn.onclick=()=>applyBackgroundAsset(btn.dataset.bgId));
+      }
+      function bindResourceBox(root){
+        if(!root || root.dataset.bound === "1") return;
+        root.dataset.bound = "1";
+        const tabs=root.querySelectorAll?.(".resource-tab")||[]; tabs.forEach(tab=>tab.onclick=()=>{tabs.forEach(t=>t.classList.remove("active"));tab.classList.add("active");renderResourceContent(root,tab.dataset.resourceTab);});
+        renderResourceContent(root,"frames");
+      }
+      function refreshResourceBoxes(){$$(".resource-box").forEach(bindResourceBox);}
+      function applyFrame(shape,frame){const item=state.images.find(x=>x.id===state.selectedId);if(!item||item.type==="sticker")return toast("Selecione uma foto antes de aplicar uma moldura.");item.shape=shape||"rect";item.frame=frame||"soft";render();scheduleSave();toast("Moldura aplicada.");}
+      function addSticker(asset){if(!asset)return;const span=baseSpans(state.images.length,"compact");state.images.push({id:uid("stk"),type:"sticker",src:STICKER_URL(asset.code),thumbnail:STICKER_URL(asset.code),name:asset.name,provider:"OpenMoji",fit:"contain",shape:"rect",frame:"none",col:clamp(span.col,2,5),row:clamp(span.row,2,5)});render();scheduleSave();toast(`${asset.name} adicionado.`);}
+      function applyBackgroundAsset(id){const a=CREATIVE_ASSETS.backgrounds.find(x=>x.id===id);if(!a)return;state.settings.boardBg=a.css;state.settings.boardBgSize=a.size||"";applyBoardSettings();scheduleSave();toast(`Fundo “${a.name}” aplicado.`);}
+
       /* ---------- Layouts ---------- */
       function applyPreset(name){
         state.images.forEach((item,index) => {
@@ -1171,6 +1221,7 @@
           swatches.querySelectorAll(".swatch").forEach(b=>b.addEventListener("click",()=>{state.settings.boardBg=b.dataset.bg;applyBoardSettings();syncMobileControls();scheduleSave();}));
         }
         els.mobileControls.querySelectorAll(".preset").forEach(btn=>btn.addEventListener("click",()=>{applyPreset(btn.dataset.preset);closeSheet("settings");}));
+        els.mobileControls.querySelectorAll(".resource-box").forEach(bindResourceBox);
         syncMobileControls();
       }
       function syncMobileControls(){
@@ -1250,8 +1301,7 @@
           canvas.width = Math.max(1, Math.round(boardRect.width*scale));
           canvas.height = Math.max(1, Math.round(boardRect.height*scale));
           const ctx = canvas.getContext("2d");
-          ctx.fillStyle = state.settings.boardBg;
-          ctx.fillRect(0,0,canvas.width,canvas.height);
+          drawBoardBackground(ctx,canvas.width,canvas.height,state.settings.boardBg);
 
           for(const item of state.images){
             const card = $(`.photo-card[data-id="${CSS.escape(item.id)}"]`);
@@ -1260,8 +1310,7 @@
             const x=(r.left-boardRect.left)*scale, y=(r.top-boardRect.top)*scale, w=r.width*scale, h=r.height*scale;
             const rr = Math.min(state.settings.radius*scale, Math.min(w,h)/2);
             ctx.save();
-            roundPath(ctx,x,y,w,h,rr);
-            ctx.clip();
+            clipExportShape(ctx,x,y,w,h,item.shape||"rect",rr);
             let holder;
             try{
               holder = await loadImageForExport(item);
@@ -1273,10 +1322,11 @@
               ctx.restore();
               continue;
             }
-            const dest=fitRect(holder.img,x,y,w,h,item.fit);
-            ctx.drawImage(holder.img,dest.x,dest.y,dest.w,dest.h);
+            const dest=fitRect(holder.img,x,y,w,h,item.type === "sticker" ? "contain" : (item.fit||"cover"));
+            if(dest) ctx.drawImage(holder.img,dest.x,dest.y,dest.w,dest.h);
             holder.revoke();
             ctx.restore();
+            if(item.type !== "sticker" && item.frame && item.frame !== "none") drawExportFrame(ctx,x,y,w,h,item.shape||"rect",item.frame,scale);
           }
 
           const link=document.createElement("a");
@@ -1290,6 +1340,31 @@
         }finally{
           els.exportBtn.innerHTML=btnText;
         }
+      }
+
+      function clipExportShape(ctx,x,y,w,h,shape,r){
+        if(shape==="circle"){ctx.beginPath();ctx.arc(x+w/2,y+h/2,Math.min(w,h)/2,0,Math.PI*2);ctx.clip();return;}
+        if(shape==="diamond"){ctx.beginPath();ctx.moveTo(x+w/2,y);ctx.lineTo(x+w,y+h/2);ctx.lineTo(x+w/2,y+h);ctx.lineTo(x,y+h/2);ctx.closePath();ctx.clip();return;}
+        if(shape==="hex"){ctx.beginPath();ctx.moveTo(x+w*.25,y);ctx.lineTo(x+w*.75,y);ctx.lineTo(x+w,y+h*.5);ctx.lineTo(x+w*.75,y+h);ctx.lineTo(x+w*.25,y+h);ctx.lineTo(x,y+h*.5);ctx.closePath();ctx.clip();return;}
+        if(shape==="star"){ctx.beginPath();for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5;const rad=i%2===0?Math.min(w,h)/2:Math.min(w,h)*.23;const px=x+w/2+Math.cos(a)*rad,py=y+h/2+Math.sin(a)*rad;i===0?ctx.moveTo(px,py):ctx.lineTo(px,py);}ctx.closePath();ctx.clip();return;}
+        if(shape==="heart"){ctx.beginPath();ctx.moveTo(x+w*.5,y+h*.92);ctx.bezierCurveTo(x+w*.12,y+h*.67,x+w*.02,y+h*.32,x+w*.22,y+h*.12);ctx.bezierCurveTo(x+w*.36,y-.01+h*.08,x+w*.47,y+h*.23,x+w*.5,y+h*.28);ctx.bezierCurveTo(x+w*.53,y+h*.23,x+w*.64,y-.01+h*.08,x+w*.78,y+h*.12);ctx.bezierCurveTo(x+w*.98,y+h*.32,x+w*.88,y+h*.67,x+w*.5,y+h*.92);ctx.closePath();ctx.clip();return;}
+        if(shape==="squircle"){roundPath(ctx,x,y,w,h,Math.min(w,h)*.28);ctx.clip();return;}
+        roundPath(ctx,x,y,w,h,r);ctx.clip();
+      }
+      function drawExportFrame(ctx,x,y,w,h,shape,style,scale){
+        ctx.save();clipExportShape(ctx,x,y,w,h,shape,0);
+        if(style==="double"){ctx.strokeStyle="rgba(255,255,255,.90)";ctx.lineWidth=5*scale;ctx.strokeRect(x+3*scale,y+3*scale,w-6*scale,h-6*scale);ctx.strokeStyle="rgba(20,15,30,.25)";ctx.lineWidth=1.5*scale;ctx.strokeRect(x+9*scale,y+9*scale,w-18*scale,h-18*scale);}else if(style==="accent"){ctx.strokeStyle="rgba(119,87,255,.9)";ctx.lineWidth=5*scale;ctx.stroke();}else{ctx.strokeStyle="rgba(255,255,255,.92)";ctx.lineWidth=6*scale;ctx.stroke();}ctx.restore();
+      }
+      function drawBoardBackground(ctx,w,h,bg){
+        if(typeof bg!=="string")bg="#efebf3";
+        if(bg.startsWith("linear-gradient(135deg,#fffdf9")){const g=ctx.createLinearGradient(0,0,w,h);g.addColorStop(0,"#fffdf9");g.addColorStop(1,"#eee7de");ctx.fillStyle=g;ctx.fillRect(0,0,w,h);return;}
+        if(bg.startsWith("linear-gradient(135deg,#ffd7a1")){const g=ctx.createLinearGradient(0,0,w,h);g.addColorStop(0,"#ffd7a1");g.addColorStop(.58,"#e5a7e8");g.addColorStop(1,"#8d83ff");ctx.fillStyle=g;ctx.fillRect(0,0,w,h);return;}
+        if(bg.startsWith("linear-gradient(135deg,#d9f4f3")){const g=ctx.createLinearGradient(0,0,w,h);g.addColorStop(0,"#d9f4f3");g.addColorStop(1,"#a6c9ea");ctx.fillStyle=g;ctx.fillRect(0,0,w,h);return;}
+        if(bg.startsWith("linear-gradient(135deg,#17131e")){const g=ctx.createLinearGradient(0,0,w,h);g.addColorStop(0,"#17131e");g.addColorStop(1,"#3e2d55");ctx.fillStyle=g;ctx.fillRect(0,0,w,h);return;}
+        if(bg.startsWith("linear-gradient(135deg,#eef9f2")){const g=ctx.createLinearGradient(0,0,w,h);g.addColorStop(0,"#eef9f2");g.addColorStop(1,"#c7e6d5");ctx.fillStyle=g;ctx.fillRect(0,0,w,h);return;}
+        if(bg.includes("radial-gradient")){ctx.fillStyle="#f5f0f7";ctx.fillRect(0,0,w,h);ctx.fillStyle="#cfc5dc";for(let y=7;y<h;y+=14)for(let x=7;x<w;x+=14){ctx.beginPath();ctx.arc(x,y,1.2,0,Math.PI*2);ctx.fill();}return;}
+        if(bg.includes("linear-gradient(#d8d1df")){ctx.fillStyle="#f4f0f7";ctx.fillRect(0,0,w,h);ctx.strokeStyle="#d8d1df";ctx.lineWidth=1;for(let y=0;y<h;y+=18){ctx.beginPath();ctx.moveTo(0,y+.5);ctx.lineTo(w,y+.5);ctx.stroke();}for(let x=0;x<w;x+=18){ctx.beginPath();ctx.moveTo(x+.5,0);ctx.lineTo(x+.5,h);ctx.stroke();}return;}
+        ctx.fillStyle=bg;ctx.fillRect(0,0,w,h);
       }
 
       function roundPath(ctx,x,y,w,h,r){
@@ -1331,6 +1406,9 @@
 
       /* ---------- Busca desktop/mobile ---------- */
       els.searchBtn.innerHTML=ICONS.search;
+      const mobileSearchButton = els.searchFormMobile.querySelector(".search-submit");
+      if(mobileSearchButton) mobileSearchButton.innerHTML = ICONS.search;
+      updateSearchLanguageUI();
       els.searchForm.addEventListener("submit",e=>{e.preventDefault();searchOpenverse(els.searchInput.value,"desktop");});
       els.searchFormMobile.addEventListener("submit",e=>{e.preventDefault();searchOpenverse(els.searchInputMobile.value,"mobile");});
       $("#searchResultsMobile").innerHTML = `<div class="result-empty"><strong>Pesquise uma ideia</strong>Os mesmos resultados da biblioteca principal podem ser adicionados daqui.</div>`;
@@ -1397,6 +1475,7 @@
         render();
         buildMobileControls();
         syncMobileControls();
+        refreshResourceBoxes();
         updateNetworkUI();
       }
 
