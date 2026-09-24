@@ -365,7 +365,7 @@
             <input class="search-input" id="searchInput" type="search" autocomplete="off" placeholder="Ex.: praia, arquitetura..." aria-label="Pesquisar imagens">
             <button class="search-submit" id="searchBtn" type="submit" aria-label="Pesquisar"></button>
           </form>
-          <div class="search-meta" id="searchMeta">Fonte: Openverse · uso sujeito à licença indicada.</div>
+          <div class="search-meta" id="searchMeta">Fontes abertas: Wikimedia Commons + Openverse · toque para adicionar.</div>
         </div>
         <div class="library-tools">
           <button class="btn btn-primary" id="uploadBtn" type="button"></button>
@@ -479,7 +479,7 @@
         <input class="search-input" id="searchInputMobile" type="search" autocomplete="off" placeholder="Ex.: natureza, cidade...">
         <button class="search-submit" type="submit" aria-label="Pesquisar"></button>
       </form>
-      <div class="search-meta" id="searchMetaMobile">Fonte: Openverse</div>
+      <div class="search-meta" id="searchMetaMobile">Fontes abertas: Wikimedia Commons + Openverse</div>
       <div class="library-results" id="searchResultsMobile" style="padding:12px 0 0"></div>
     </div>
   </div>
@@ -788,12 +788,75 @@
         toast(`${accepted.length} ${accepted.length === 1 ? "foto adicionada" : "fotos adicionadas"}.`);
       }
 
-      /* ---------- Imagens da web: Openverse sem chave exposta ---------- */
+      /* ---------- Pesquisa de imagens ----------
+         Wikimedia Commons é a fonte principal porque sua API aceita consultas
+         diretamente do navegador usando origin=*, sem chave. Openverse fica como
+         segunda tentativa, caso a busca do Commons não retorne resultados. ---------- */
       let currentSearchController = null;
+
+      function setSearchUI(target, metaText, html){
+        const meta = target === "mobile" ? els.searchMetaMobile : els.searchMeta;
+        const resultsEl = target === "mobile" ? els.searchResultsMobile : els.searchResults;
+        meta.textContent = metaText;
+        if(html !== undefined) resultsEl.innerHTML = html;
+      }
+
+      async function fetchWikimedia(query, signal){
+        const api = new URL("https://commons.wikimedia.org/w/api.php");
+        api.searchParams.set("action", "query");
+        api.searchParams.set("generator", "search");
+        api.searchParams.set("gsrsearch", query);
+        api.searchParams.set("gsrnamespace", "6");
+        api.searchParams.set("gsrlimit", "36");
+        api.searchParams.set("prop", "imageinfo");
+        api.searchParams.set("iiprop", "url|mime|extmetadata");
+        api.searchParams.set("iiurlwidth", "640");
+        api.searchParams.set("format", "json");
+        api.searchParams.set("origin", "*");
+
+        const response = await fetch(api.toString(), { signal, headers:{Accept:"application/json"} });
+        if(!response.ok) throw new Error("Wikimedia HTTP " + response.status);
+        const data = await response.json();
+        const pages = Object.values(data.query?.pages || {});
+        return pages.map(page=>{
+          const info = page.imageinfo?.[0] || {};
+          const meta = info.extmetadata || {};
+          const title = String(page.title || "").replace(/^File:/i, "");
+          const creator = meta.Artist?.value ? String(meta.Artist.value).replace(/<[^>]*>/g, "").trim() : "";
+          const license = meta.LicenseShortName?.value ? String(meta.LicenseShortName.value).replace(/<[^>]*>/g, "").trim() : "";
+          return {
+            title: title || "Imagem do Wikimedia Commons",
+            creator,
+            license,
+            provider: "Wikimedia Commons",
+            thumbnail: info.thumburl || info.url || "",
+            url: info.url || info.thumburl || "",
+            foreign_landing_url: page.fullurl || "https://commons.wikimedia.org/"
+          };
+        }).filter(x=>x.thumbnail);
+      }
+
+      async function fetchOpenverse(query, signal){
+        const api = new URL("https://api.openverse.org/v1/images/");
+        api.searchParams.set("q", query);
+        api.searchParams.set("page_size", "36");
+        const response = await fetch(api.toString(), {signal, headers:{Accept:"application/json"}});
+        if(!response.ok) throw new Error("Openverse HTTP " + response.status);
+        const data = await response.json();
+        return (Array.isArray(data.results) ? data.results : []).map(hit=>({
+          title: hit.title || "Imagem aberta",
+          creator: hit.creator || "",
+          license: hit.license ? `${hit.license}${hit.license_version ? " " + hit.license_version : ""}` : "",
+          provider: hit.provider || hit.source || "Openverse",
+          thumbnail: hit.thumbnail || hit.url || "",
+          url: hit.url || hit.thumbnail || "",
+          foreign_landing_url: hit.foreign_landing_url || ""
+        })).filter(x=>x.thumbnail);
+      }
 
       async function searchOpenverse(query, target="desktop"){
         if(!navigator.onLine){
-          toast("A pesquisa online está indisponível offline.");
+          setSearchUI(target, "Você está offline. A busca web precisa de conexão.", `<div class="result-empty"><strong>Pesquisa offline</strong>Adicione fotos do aparelho para continuar criando.</div>`);
           return;
         }
         query = query.trim();
@@ -801,24 +864,34 @@
         if(currentSearchController) currentSearchController.abort();
         currentSearchController = new AbortController();
 
-        const meta = target === "mobile" ? els.searchMetaMobile : els.searchMeta;
         const resultsEl = target === "mobile" ? els.searchResultsMobile : els.searchResults;
-        meta.textContent = "Buscando imagens…";
-        resultsEl.innerHTML = `<div class="result-empty"><div class="loader" style="margin:0 auto 12px"></div>Consultando a biblioteca aberta.</div>`;
+        setSearchUI(target, "Buscando imagens…", `<div class="result-empty"><div class="loader" style="margin:0 auto 12px"></div>Procurando em bibliotecas abertas.</div>`);
 
         try{
-          const url = `https://api.openverse.org/v1/images/?q=${encodeURIComponent(query)}&page_size=28`;
-          const response = await fetch(url, {signal:currentSearchController.signal, headers:{Accept:"application/json"}});
-          if(!response.ok) throw new Error("HTTP " + response.status);
-          const data = await response.json();
-          const hits = Array.isArray(data.results) ? data.results.filter(x => x.thumbnail || x.url) : [];
+          let hits = [];
+          let sourceLabel = "Wikimedia Commons";
+
+          try{
+            hits = await fetchWikimedia(query, currentSearchController.signal);
+          }catch(firstError){
+            if(firstError.name === "AbortError") throw firstError;
+            console.warn("Wikimedia indisponível, tentando Openverse:", firstError);
+            sourceLabel = "Openverse";
+            try{
+              hits = await fetchOpenverse(query, currentSearchController.signal);
+            }catch(secondError){
+              if(secondError.name === "AbortError") throw secondError;
+              console.warn("Openverse também indisponível:", secondError);
+              throw new Error("As fontes de busca não responderam.");
+            }
+          }
+
           renderSearchResults(hits, resultsEl);
-          meta.textContent = hits.length ? `${hits.length} resultados · toque para adicionar.` : "Nenhuma imagem encontrada.";
+          setSearchUI(target, hits.length ? `${hits.length} resultados · ${sourceLabel} · toque para adicionar.` : `Nenhuma imagem encontrada em ${sourceLabel}.`);
         }catch(err){
           if(err.name === "AbortError") return;
           console.error(err);
-          meta.textContent = "Não foi possível pesquisar agora.";
-          resultsEl.innerHTML = `<div class="result-empty"><strong>Pesquisa indisponível</strong>Verifique sua conexão e tente novamente. O restante do editor continua funcionando.</div>`;
+          setSearchUI(target, "A pesquisa não respondeu.", `<div class="result-empty"><strong>Não foi possível pesquisar</strong>Confira a internet e tente novamente. Fotos locais continuam disponíveis.</div>`);
         }
       }
 
